@@ -19,7 +19,7 @@ class Client
      *
      * @ORM\Column(name="num_client", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $numClient;
 
@@ -101,13 +101,6 @@ class Client
     public function getNumClient(): ?int
     {
         return $this->numClient;
-    }
-
-    public function setNumClient(string $numClient): self
-    {
-        $this->numClient = $numClient;
-
-        return $this;
     }
 
     public function getNomClient(): ?string

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use FOS\UserBundle\Model\User as FOSUser;
 
 /**
  * User
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_8D93D64992FC23A8", columns={"username_canonical"}), @ORM\UniqueConstraint(name="UNIQ_8D93D649C05FB297", columns={"confirmation_token"}), @ORM\UniqueConstraint(name="UNIQ_8D93D649A0D96FBF", columns={"email_canonical"})})
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User
+class User extends FOSUser
 {
     /**
      * @var int
@@ -19,221 +20,83 @@ class User
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=180, nullable=false)
      */
-    private $username;
+    protected $username;
 
     /**
      * @var string
      *
      * @ORM\Column(name="username_canonical", type="string", length=180, nullable=false)
      */
-    private $usernameCanonical;
+    protected $usernameCanonical;
 
     /**
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=180, nullable=false)
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
      *
      * @ORM\Column(name="email_canonical", type="string", length=180, nullable=false)
      */
-    private $emailCanonical;
+    protected $emailCanonical;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="enabled", type="boolean", nullable=false)
      */
-    private $enabled;
+    protected $enabled;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="salt", type="string", length=255, nullable=true, options={"default"="NULL"})
      */
-    private $salt = 'NULL';
+    protected $salt = 'NULL';
 
     /**
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255, nullable=false)
      */
-    private $password;
+    protected $password;
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="last_login", type="datetime", nullable=true, options={"default"="NULL"})
      */
-    private $lastLogin = 'NULL';
+    protected $lastLogin = 'NULL';
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="confirmation_token", type="string", length=180, nullable=true, options={"default"="NULL"})
      */
-    private $confirmationToken = 'NULL';
+    protected $confirmationToken = 'NULL';
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="password_requested_at", type="datetime", nullable=true, options={"default"="NULL"})
      */
-    private $passwordRequestedAt = 'NULL';
+    protected $passwordRequestedAt = 'NULL';
 
     /**
      * @var array
      *
      * @ORM\Column(name="roles", type="array", length=0, nullable=false)
      */
-    private $roles;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    public function getUsernameCanonical(): ?string
-    {
-        return $this->usernameCanonical;
-    }
-
-    public function setUsernameCanonical(string $usernameCanonical): self
-    {
-        $this->usernameCanonical = $usernameCanonical;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getEmailCanonical(): ?string
-    {
-        return $this->emailCanonical;
-    }
-
-    public function setEmailCanonical(string $emailCanonical): self
-    {
-        $this->emailCanonical = $emailCanonical;
-
-        return $this;
-    }
-
-    public function getEnabled(): ?bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
-    }
-
-    public function getSalt(): ?string
-    {
-        return $this->salt;
-    }
-
-    public function setSalt(?string $salt): self
-    {
-        $this->salt = $salt;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getLastLogin(): ?\DateTimeInterface
-    {
-        return $this->lastLogin;
-    }
-
-    public function setLastLogin(?\DateTimeInterface $lastLogin): self
-    {
-        $this->lastLogin = $lastLogin;
-
-        return $this;
-    }
-
-    public function getConfirmationToken(): ?string
-    {
-        return $this->confirmationToken;
-    }
-
-    public function setConfirmationToken(?string $confirmationToken): self
-    {
-        $this->confirmationToken = $confirmationToken;
-
-        return $this;
-    }
-
-    public function getPasswordRequestedAt(): ?\DateTimeInterface
-    {
-        return $this->passwordRequestedAt;
-    }
-
-    public function setPasswordRequestedAt(?\DateTimeInterface $passwordRequestedAt): self
-    {
-        $this->passwordRequestedAt = $passwordRequestedAt;
-
-        return $this;
-    }
-
-    public function getRoles(): ?array
-    {
-        return $this->roles;
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
+    protected $roles;
 
 }

@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Commande
  *
- * @ORM\Table(name="commande", indexes={@ORM\Index(name="fk_commande_user1", columns={"user_id"}), @ORM\Index(name="fk_commande_etat_commande1", columns={"etat_commande"})})
+ * @ORM\Table(name="commande", indexes={@ORM\Index(name="fk_commande_etat_commande1", columns={"etat_commande"})})
  * @ORM\Entity(repositoryClass="App\Repository\CommandeRepository")
  */
 class Commande
@@ -32,16 +32,6 @@ class Commande
      * })
      */
     private $etatCommande;
-
-    /**
-     * @var \User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * })
-     */
-    private $user;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -87,18 +77,6 @@ class Commande
     public function setEtatCommande(?EtatCommande $etatCommande): self
     {
         $this->etatCommande = $etatCommande;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }
