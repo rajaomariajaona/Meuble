@@ -5,3 +5,19 @@ client:
     type: rest
     resource: App\Controller\ClientController
     prefix: api
+province:
+    type: rest
+    resource: App\Controller\ProvinceController
+    prefix: api
+etatcommande:
+    type: rest
+    resource: App\Controller\EtatCommandeController
+    prefix: api
+categorie:
+    type: rest
+    resource: App\Controller\CategorieController
+    prefix: api
+# meuble:
+#     type: rest
+#     resource: App\Controller\MeubleController
+#     prefix: api

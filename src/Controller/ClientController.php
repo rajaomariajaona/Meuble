@@ -20,6 +20,9 @@ class ClientController extends AbstractFOSRestController
         $this -> entityManager = $em;
     }
     private $entityManager;
+
+    // CRUD Clients
+
     public function getClientsAction()
     {
         $data = $this -> clientRepository -> findAll();
@@ -101,4 +104,8 @@ class ClientController extends AbstractFOSRestController
         $this -> entityManager -> flush();
         return $this -> view($client, Response::HTTP_OK) ;
     }
+
+    // FIN CRUD Clients
+
+    
 }

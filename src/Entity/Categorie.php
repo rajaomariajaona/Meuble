@@ -25,7 +25,7 @@ class Categorie
     {
         return $this->categorie;
     }
-    public function setCategorie(String $categorie): self
+    public function setCategorie(?string $categorie): self
     {
         $this->categorie = $categorie;
         return $this;
