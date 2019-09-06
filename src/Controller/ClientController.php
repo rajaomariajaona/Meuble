@@ -30,7 +30,7 @@ class ClientController extends AbstractFOSRestController
     }
     public function getClientAction(Client $client)
     {
-        $data = $this -> clientRepository -> find($client);
+        $data = $client;
         return $this -> view($data, Response::HTTP_OK) ;
     }
     /**

@@ -17,7 +17,15 @@ categorie:
     type: rest
     resource: App\Controller\CategorieController
     prefix: api
-# meuble:
-#     type: rest
-#     resource: App\Controller\MeubleController
-#     prefix: api
+meuble:
+    type: rest
+    resource: App\Controller\MeubleController
+    prefix: api
+stock:
+    type: rest
+    resource: App\Controller\StockController
+    prefix: api
+commande:
+    type: rest
+    resource: App\Controller\CommandeController
+    prefix: api

@@ -19,7 +19,7 @@ class Meuble
      *
      * @ORM\Column(name="num_serie", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $numSerie;
 
@@ -79,6 +79,12 @@ class Meuble
     public function getNumSerie(): ?int
     {
         return $this->numSerie;
+    }
+    public function setNumSerie(int $numSerie): self
+    {
+        $this->numSerie = $numSerie;
+        
+        return $this;
     }
 
     public function getNomMeuble(): ?string
