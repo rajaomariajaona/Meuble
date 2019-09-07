@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Entity\Commande;
+use App\Entity\Meuble;
 use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -37,19 +38,50 @@ class CommandeController extends AbstractFOSRestController
      * @RequestParam(name="etatcommande")
      * @RequestParam(name="meubles")
      */
-    public function postCommandeAction(ParamFetcher $paramFetcher,Client $clientCommander)
+    public function postClientCommandeAction(Client $clientCommander, ParamFetcher $paramFetcher)
     {
         $client = $clientCommander;
         
         $etatcommande = $paramFetcher -> get("etatcommande");
         $commande = new Commande();
         $commande -> setEtatCommande($etatcommande);
-
         $client -> addCommandeNumCommande($commande);
-
-        return $this -> view($data, Response::HTTP_OK) ;
+        return $this -> view($commande, Response::HTTP_OK) ;
     }
 
+    public function getCommandeMeublesAction(Commande $commande)
+    {
+        $meubles = $commande -> getMeubleNumSerie();
+        return $this -> view($meubles, Response::HTTP_OK);
+    }
+    /**
+     * @RequestParam(name="meuble")
+     */
+    public function postCommandeMeublesAction(Commande $commande, ParamFetcher $paramFetcher)
+    {
+        $numserie = $paramFetcher -> get("meuble");
+        $meuble = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($numserie);
+        $commande -> addMeubleNumSerie($meuble);
+        return $this -> view($commande, Response::HTTP_OK);
+    }
+    /**
+     * @RequestParam(name="meuble")
+     */
+    public function putCommandeMeubleAction(Commande $commande,Meuble $meubleAncien,  ParamFetcher $paramFetcher)
+    {
+        $numserie = $paramFetcher -> get("meuble");
+        $meuble = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($numserie);
+
+        $commande ->removeMeubleNumSerie($meubleAncien);
+        $commande ->addMeubleNumSerie($meuble);
+        return $this -> view($commande, Response::HTTP_OK);
+    }
+    public function deleteCommandeMeubleAction(Commande $commande, Meuble $meuble, ParamFetcher $paramFetcher)
+    {
+        $nom = $paramFetcher -> get("meuble");
+        $commande -> addMeubleNumSerie($meuble);
+        return $this -> view($commande, Response::HTTP_OK);
+    }
     public function deleteCommandesAction(Commande $commandeDelete)
     {
         $commande = $commandeDelete;
