@@ -44,7 +44,6 @@ class StockController extends AbstractFOSRestController
         $meuble = $this -> meubleRepository -> find($meubleStock);
 
         $meuble -> setQuantiteStock($quantitestock);
-        $this -> entityManager -> persist($meuble);
         $this -> entityManager -> flush();
         return $this -> view($meuble, Response::HTTP_OK) ;
     }
@@ -57,7 +56,6 @@ class StockController extends AbstractFOSRestController
         $meuble = $this -> meubleRepository -> find($meubleCommande);
 
         $meuble -> setQuantiteCommande($quantitecommande);
-        $this -> entityManager -> persist($meuble);
         $this -> entityManager -> flush();
         return $this -> view($meuble, Response::HTTP_OK) ;
     }
