@@ -52,6 +52,7 @@ class CommandeController extends AbstractFOSRestController
         }
         return $this -> view(['message' => 'Erreur'], Response::HTTP_NOT_FOUND);
     }
+
     /**
      * @RequestParam(name="etat_commande")
      */
@@ -66,6 +67,21 @@ class CommandeController extends AbstractFOSRestController
         $this -> entityManager -> flush();
         return $this -> view($commande, Response::HTTP_CREATED) ;
     }
+
+    /**
+     * @RequestParam(name="etat_commande")
+     */
+    public function patchClientCommandeAction(Client $clientCommander, Commande $commande,ParamFetcher $paramFetcher)
+    {
+        if ($clientCommander == $commande -> getClientNumClient()) {
+            $etatcommande = $this -> getDoctrine() -> getRepository(EtatCommande::class) ->find($paramFetcher -> get("etat_commande"));
+            $commande -> setEtatCommande($etatcommande);
+            $this -> entityManager -> flush();
+            return $this -> view($commande, Response::HTTP_OK) ;
+        }
+        return $this -> view($commande, Response::HTTP_NOT_MODIFIED) ;
+    }
+
     /**
      * @RequestParam(name="meuble")
      * @RequestParam(name="nombre_commande")
@@ -91,8 +107,6 @@ class CommandeController extends AbstractFOSRestController
         
     }
 
-
-
     /**
      * @RequestParam(name="meuble")
      * @RequestParam(name="nombre_commande")
@@ -113,8 +127,7 @@ class CommandeController extends AbstractFOSRestController
         
     }
 
-
-
+    
     public function deleteClientCommandeMeublesAction(Client $clientCommander,Commande $commande, Contient $contient)
     {   
         if($clientCommander == $commande -> getClientNumClient()){
