@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Contient
  *
  * @ORM\Table(name="contient", uniqueConstraints={@ORM\UniqueConstraint(name="commande_num_commande", columns={"commande_num_commande", "meuble_num_serie"})}, indexes={@ORM\Index(name="fk_commande_has_meuble_meuble1", columns={"meuble_num_serie"}), @ORM\Index(name="IDX_DC302E568D055FF0", columns={"commande_num_commande"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ContientRepository")
  */
 class Contient
 {
