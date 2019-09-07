@@ -36,13 +36,15 @@ class ContientRepository extends ServiceEntityRepository
     }
     */
 
-    public function findNumClient($value): ?Contient
+    /*
+    public function findOneBySomeField($value): ?Contient
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.getCommandeNumCommande() = :val')
+            ->andWhere('c.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
+    */
 }

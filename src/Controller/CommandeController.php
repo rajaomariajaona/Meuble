@@ -39,14 +39,21 @@ class CommandeController extends AbstractFOSRestController
 
     public function getClientCommandesAction(Client $clientCommander)
     {
-        $data = $this -> contientRepository -> findBy(['numClient' => 1]);
-        return $this -> view($data, Response::HTTP_OK) ;
+        $commandes = $this -> commandeRepository -> findBy(["clientNumClient" => $clientCommander]);
+        return $this -> view($commandes, Response::HTTP_OK);
     }
-    public function getClientCommandeAction(Client $clientCommander,Commande $commande)
-    {
-        $data = $this -> contientRepository -> findBy(['numClient' => $clientCommander, 'commandeNumCommande' => $commande ]);
-        return $this -> view($data, Response::HTTP_OK) ;
+    public function getClientCommandeMeublesAction(Client $clientCommander,Commande $commande)
+    {   
+        if($clientCommander == $commande -> getClientNumClient()){
+            $meubles = $this -> contientRepository -> findBy(["commandeNumCommande" => $commande]);
+            return $this -> view($meubles, Response::HTTP_OK);
+        }
+        return $this -> view(['message' => 'Erreur'], Response::HTTP_NOT_FOUND);
     }
+
+
+
+
     /**
      * @RequestParam(name="etatcommande")
      * @RequestParam(name="meubles")
@@ -67,6 +74,9 @@ class CommandeController extends AbstractFOSRestController
         $meubles = $commande -> getMeubleNumSerie();
         return $this -> view($meubles, Response::HTTP_OK);
     }
+
+
+    
     /**
      * @RequestParam(name="meuble")
      */
