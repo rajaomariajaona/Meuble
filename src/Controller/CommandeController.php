@@ -33,7 +33,18 @@ class CommandeController extends AbstractFOSRestController
     }
     public function getCommandeAction(Commande $commande)
     {
-        $data = $this -> commandeRepository -> find($commande);
+        $data = $this ->contientRepository -> findBy(['commandeNumCommande' => $commande ]);
+        return $this -> view($data, Response::HTTP_OK) ;
+    }
+
+    public function getClientCommandesAction(Client $clientCommander)
+    {
+        $data = $this -> contientRepository -> findBy(['numClient' => 1]);
+        return $this -> view($data, Response::HTTP_OK) ;
+    }
+    public function getClientCommandeAction(Client $clientCommander,Commande $commande)
+    {
+        $data = $this -> contientRepository -> findBy(['numClient' => $clientCommander, 'commandeNumCommande' => $commande ]);
         return $this -> view($data, Response::HTTP_OK) ;
     }
     /**
