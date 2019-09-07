@@ -2,15 +2,13 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Meuble
  *
  * @ORM\Table(name="meuble", indexes={@ORM\Index(name="fk_meuble_categorie1", columns={"categorie"})})
- * @ORM\Entity(repositoryClass="App\Repository\MeubleRepository")
+ * @ORM\Entity
  */
 class Meuble
 {
@@ -19,7 +17,7 @@ class Meuble
      *
      * @ORM\Column(name="num_serie", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $numSerie;
 
@@ -61,77 +59,65 @@ class Meuble
      */
     private $categorie;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Commande", mappedBy="meubleNumSerie")
-     */
-    private $commandeNumCommande;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
+
+    public function setNumSerie(int $numSerie):self
     {
-        $this->commandeNumCommande = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+        $this->numSerie = $numSerie;
 
+        return $this;
+    }
+    
     public function getNumSerie(): ?int
     {
         return $this->numSerie;
     }
-    public function setNumSerie(int $numSerie): self
-    {
-        $this->numSerie = $numSerie;
-        
-        return $this;
-    }
-
+    
     public function getNomMeuble(): ?string
     {
         return $this->nomMeuble;
     }
-
+    
     public function setNomMeuble(string $nomMeuble): self
     {
         $this->nomMeuble = $nomMeuble;
-
+        
         return $this;
     }
-
+    
     public function getPrix(): ?float
     {
         return $this->prix;
     }
-
+    
     public function setPrix(float $prix): self
     {
         $this->prix = $prix;
-
+        
         return $this;
     }
-
+    
     public function getQuantiteStock(): ?int
     {
         return $this->quantiteStock;
     }
-
+    
     public function setQuantiteStock(?int $quantiteStock): self
     {
         $this->quantiteStock = $quantiteStock;
-
+        
         return $this;
     }
-
+    
     public function getQuantiteCommande(): ?int
     {
         return $this->quantiteCommande;
     }
-
+    
     public function setQuantiteCommande(?int $quantiteCommande): self
     {
         $this->quantiteCommande = $quantiteCommande;
-
+        
         return $this;
     }
 
@@ -139,40 +125,11 @@ class Meuble
     {
         return $this->categorie;
     }
-
+    
     public function setCategorie(?Categorie $categorie): self
     {
         $this->categorie = $categorie;
-
+        
         return $this;
-    }
-
-    /**
-     * @return Collection|Commande[]
-     */
-    public function getCommandeNumCommande(): Collection
-    {
-        return $this->commandeNumCommande;
-    }
-
-    public function addCommandeNumCommande(Commande $commandeNumCommande): self
-    {
-        if (!$this->commandeNumCommande->contains($commandeNumCommande)) {
-            $this->commandeNumCommande[] = $commandeNumCommande;
-            $commandeNumCommande->addMeubleNumSerie($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCommandeNumCommande(Commande $commandeNumCommande): self
-    {
-        if ($this->commandeNumCommande->contains($commandeNumCommande)) {
-            $this->commandeNumCommande->removeElement($commandeNumCommande);
-            $commandeNumCommande->removeMeubleNumSerie($this);
-        }
-
-        return $this;
-    }
-
+    }   
 }

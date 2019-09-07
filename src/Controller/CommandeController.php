@@ -6,6 +6,7 @@ use App\Entity\Client;
 use App\Entity\Commande;
 use App\Entity\Meuble;
 use App\Repository\CommandeRepository;
+use App\Repository\ContientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
@@ -14,9 +15,10 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 
 class CommandeController extends AbstractFOSRestController
 {
-    
-    public function __construct(CommandeRepository $commandeRepository, EntityManagerInterface $em)
+    private $contientRepository;
+    public function __construct(ContientRepository $contientRepository, CommandeRepository $commandeRepository, EntityManagerInterface $em)
     {
+        $this -> contientRepository = $contientRepository;
         $this-> commandeRepository = $commandeRepository;
         $this -> entityManager = $em;
     }
@@ -26,8 +28,8 @@ class CommandeController extends AbstractFOSRestController
 
     public function getCommandesAction()
     {
-        $data = $this -> commandeRepository -> findAll();
-        return $data ;
+        $data = $this -> contientRepository -> findAll();
+        return $this -> view($data, Response::HTTP_OK) ;
     }
     public function getCommandeAction(Commande $commande)
     {
