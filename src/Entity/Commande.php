@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Commande
  *
  * @ORM\Table(name="commande", indexes={@ORM\Index(name="fk_commande_etat_commande1", columns={"etat_commande"})})
- * @ORM\Entity(repositoryClass="App\Repository\CommandeRepository")
+ * @ORM\Entity
  */
 class Commande
 {
@@ -36,21 +36,6 @@ class Commande
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Meuble", inversedBy="commandeNumCommande")
-     * @ORM\JoinTable(name="contient",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="commande_num_commande", referencedColumnName="num_commande")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="meuble_num_serie", referencedColumnName="num_serie")
-     *   }
-     * )
-     */
-    private $meubleNumSerie;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
      * @ORM\ManyToMany(targetEntity="Client", mappedBy="commandeNumCommande")
      */
     private $clientNumClient;
@@ -60,10 +45,16 @@ class Commande
      */
     public function __construct()
     {
-        $this->meubleNumSerie = new \Doctrine\Common\Collections\ArrayCollection();
         $this->clientNumClient = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function setNumCommande(int $numCommande): self
+    {
+        $this->numCommande = $numCommande;
+
+        return $this;
+    }
+    
     public function getNumCommande(): ?int
     {
         return $this->numCommande;
@@ -77,32 +68,6 @@ class Commande
     public function setEtatCommande(?EtatCommande $etatCommande): self
     {
         $this->etatCommande = $etatCommande;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Meuble[]
-     */
-    public function getMeubleNumSerie(): Collection
-    {
-        return $this->meubleNumSerie;
-    }
-
-    public function addMeubleNumSerie(Meuble $meubleNumSerie): self
-    {
-        if (!$this->meubleNumSerie->contains($meubleNumSerie)) {
-            $this->meubleNumSerie[] = $meubleNumSerie;
-        }
-
-        return $this;
-    }
-
-    public function removeMeubleNumSerie(Meuble $meubleNumSerie): self
-    {
-        if ($this->meubleNumSerie->contains($meubleNumSerie)) {
-            $this->meubleNumSerie->removeElement($meubleNumSerie);
-        }
 
         return $this;
     }

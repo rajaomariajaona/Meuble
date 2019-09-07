@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Client
  *
  * @ORM\Table(name="client", indexes={@ORM\Index(name="fk_client_province", columns={"province_client"})})
- * @ORM\Entity(repositoryClass="App\Repository\ClientRepository")
+ * @ORM\Entity
  */
 class Client
 {
@@ -213,4 +213,10 @@ class Client
         return $this;
     }
 
+    public function setNumClient(int $numClient): self
+    {
+        $this->numClient = $numClient;
+
+        return $this;
+    }
 }
