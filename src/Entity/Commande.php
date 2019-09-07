@@ -2,14 +2,12 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Commande
  *
- * @ORM\Table(name="commande", indexes={@ORM\Index(name="fk_commande_etat_commande1", columns={"etat_commande"})})
+ * @ORM\Table(name="commande", indexes={@ORM\Index(name="fk_commande_etat_comande1", columns={"etat_commande"}), @ORM\Index(name="commande_ibfk_1", columns={"client_num_client"})})
  * @ORM\Entity(repositoryClass="App\Repository\CommandeRepository")
  */
 class Commande
@@ -24,6 +22,16 @@ class Commande
     private $numCommande;
 
     /**
+     * @var \Client
+     *
+     * @ORM\ManyToOne(targetEntity="Client")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="client_num_client", referencedColumnName="num_client")
+     * })
+     */
+    private $clientNumClient;
+
+    /**
      * @var \EtatCommande
      *
      * @ORM\ManyToOne(targetEntity="EtatCommande")
@@ -33,31 +41,21 @@ class Commande
      */
     private $etatCommande;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Client", mappedBy="commandeNumCommande")
-     */
-    private $clientNumClient;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->clientNumClient = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function setNumCommande(int $numCommande): self
-    {
-        $this->numCommande = $numCommande;
-
-        return $this;
-    }
-    
     public function getNumCommande(): ?int
     {
         return $this->numCommande;
+    }
+
+    public function getClientNumClient(): ?Client
+    {
+        return $this->clientNumClient;
+    }
+
+    public function setClientNumClient(?Client $clientNumClient): self
+    {
+        $this->clientNumClient = $clientNumClient;
+
+        return $this;
     }
 
     public function getEtatCommande(): ?EtatCommande
@@ -72,32 +70,10 @@ class Commande
         return $this;
     }
 
-    /**
-     * @return Collection|Client[]
-     */
-    public function getClientNumClient(): Collection
+    public function setNumCommande(int $numCommande): self
     {
-        return $this->clientNumClient;
-    }
-
-    public function addClientNumClient(Client $clientNumClient): self
-    {
-        if (!$this->clientNumClient->contains($clientNumClient)) {
-            $this->clientNumClient[] = $clientNumClient;
-            $clientNumClient->addCommandeNumCommande($this);
-        }
+        $this->numCommande = $numCommande;
 
         return $this;
     }
-
-    public function removeClientNumClient(Client $clientNumClient): self
-    {
-        if ($this->clientNumClient->contains($clientNumClient)) {
-            $this->clientNumClient->removeElement($clientNumClient);
-            $clientNumClient->removeCommandeNumCommande($this);
-        }
-
-        return $this;
-    }
-
 }

@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -74,29 +72,6 @@ class Client
      * })
      */
     private $provinceClient;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Commande", inversedBy="clientNumClient")
-     * @ORM\JoinTable(name="passer",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="client_num_client", referencedColumnName="num_client")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="commande_num_commande", referencedColumnName="num_commande")
-     *   }
-     * )
-     */
-    private $commandeNumCommande;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->commandeNumCommande = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     public function getNumClient(): ?int
     {
@@ -186,33 +161,6 @@ class Client
 
         return $this;
     }
-
-    /**
-     * @return Collection|Commande[]
-     */
-    public function getCommandeNumCommande(): Collection
-    {
-        return $this->commandeNumCommande;
-    }
-
-    public function addCommandeNumCommande(Commande $commandeNumCommande): self
-    {
-        if (!$this->commandeNumCommande->contains($commandeNumCommande)) {
-            $this->commandeNumCommande[] = $commandeNumCommande;
-        }
-
-        return $this;
-    }
-
-    public function removeCommandeNumCommande(Commande $commandeNumCommande): self
-    {
-        if ($this->commandeNumCommande->contains($commandeNumCommande)) {
-            $this->commandeNumCommande->removeElement($commandeNumCommande);
-        }
-
-        return $this;
-    }
-
     public function setNumClient(int $numClient): self
     {
         $this->numClient = $numClient;
