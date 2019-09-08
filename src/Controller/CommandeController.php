@@ -9,6 +9,7 @@ use App\Entity\EtatCommande;
 use App\Entity\Meuble;
 use App\Repository\CommandeRepository;
 use App\Repository\ContientRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
@@ -53,15 +54,14 @@ class CommandeController extends AbstractFOSRestController
         return $this -> view(['message' => 'Erreur'], Response::HTTP_NOT_FOUND);
     }
 
-    /**
-     * @RequestParam(name="etat_commande")
-     */
-    public function postClientCommandeAction(Client $clientCommander, ParamFetcher $paramFetcher)
+    public function postClientCommandeAction(Client $clientCommander)
     {
         $client = $clientCommander;
-        $etatcommande = $this -> getDoctrine() -> getRepository(EtatCommande::class) ->find($paramFetcher -> get("etat_commande"));
+        $etatcommande = $this -> getDoctrine() -> getRepository(EtatCommande::class) ->find("encours");
         $commande = new Commande();
-        $commande -> setEtatCommande($etatcommande);
+        $commande -> setEtatCommande($etatcommande)
+            -> setDateCommande(new DateTime())
+        ;
         $commande -> setClientNumClient($client);
         $this -> entityManager -> persist($commande);
         $this -> entityManager -> flush();
@@ -71,11 +71,37 @@ class CommandeController extends AbstractFOSRestController
     /**
      * @RequestParam(name="etat_commande")
      */
-    public function patchClientCommandeAction(Client $clientCommander, Commande $commande,ParamFetcher $paramFetcher)
+    public function patchClientCommandeEtatAction(Client $clientCommander, Commande $commande,ParamFetcher $paramFetcher)
     {
         if ($clientCommander == $commande -> getClientNumClient()) {
             $etatcommande = $this -> getDoctrine() -> getRepository(EtatCommande::class) ->find($paramFetcher -> get("etat_commande"));
             $commande -> setEtatCommande($etatcommande);
+                
+            $this -> entityManager -> flush();
+            return $this -> view($commande, Response::HTTP_OK) ;
+        }
+        return $this -> view($commande, Response::HTTP_NOT_MODIFIED) ;
+    }
+
+    /**
+     * @RequestParam(name="date_livraison")
+     */
+    public function patchClientCommandeDatelivraisonAction(Client $clientCommander, Commande $commande,ParamFetcher $paramFetcher)
+    {
+        if ($clientCommander == $commande -> getClientNumClient()) {
+            $commande -> setDateLivraison(new Datetime($paramFetcher -> get("date_livraison")));
+            $this -> entityManager -> flush();
+            return $this -> view($commande, Response::HTTP_OK) ;
+        }
+        return $this -> view($commande, Response::HTTP_NOT_MODIFIED) ;
+    }
+    /**
+     * @RequestParam(name="date_paiement")
+     */
+    public function patchClientCommandeDatepaiementAction(Client $clientCommander, Commande $commande,ParamFetcher $paramFetcher)
+    {
+        if ($clientCommander == $commande -> getClientNumClient()) {
+            $commande -> setDatePaiement(new DateTime($paramFetcher -> get("date_paiement")));   
             $this -> entityManager -> flush();
             return $this -> view($commande, Response::HTTP_OK) ;
         }
@@ -147,5 +173,5 @@ class CommandeController extends AbstractFOSRestController
         }
         return $this -> view(['message' => 'Erreur'], Response::HTTP_NOT_FOUND);
     }
-    // FIN CRUD Commandes    
+    // FIN CRUD Commandes
 }
