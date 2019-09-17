@@ -17,7 +17,7 @@ class Meuble
      *
      * @ORM\Column(name="num_serie", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $numSerie;
 
