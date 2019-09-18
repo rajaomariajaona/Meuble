@@ -9,10 +9,6 @@ province:
     type: rest
     resource: App\Controller\ProvinceController
     prefix: api
-etatcommande:
-    type: rest
-    resource: App\Controller\EtatCommandeController
-    prefix: api
 categorie:
     type: rest
     resource: App\Controller\CategorieController
@@ -28,4 +24,8 @@ stock:
 commande:
     type: rest
     resource: App\Controller\CommandeController
+    prefix: api
+contient:
+    type: rest
+    resource: App\Controller\ContientController
     prefix: api

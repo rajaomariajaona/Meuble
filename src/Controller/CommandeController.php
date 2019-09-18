@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Client;
 use App\Entity\Commande;
 use App\Entity\Contient;
-use App\Entity\EtatCommande;
 use App\Entity\Meuble;
 use App\Repository\CommandeRepository;
 use App\Repository\ContientRepository;
@@ -18,10 +17,8 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 
 class CommandeController extends AbstractFOSRestController
 {
-    private $contientRepository;
-    public function __construct(ContientRepository $contientRepository, CommandeRepository $commandeRepository, EntityManagerInterface $em)
+    public function __construct(CommandeRepository $commandeRepository, EntityManagerInterface $em)
     {
-        $this -> contientRepository = $contientRepository;
         $this-> commandeRepository = $commandeRepository;
         $this -> entityManager = $em;
     }
@@ -31,36 +28,24 @@ class CommandeController extends AbstractFOSRestController
 
     public function getCommandesAction()
     {
-        $data = $this -> contientRepository -> findAll();
+        $data = $this -> commandeRepository -> findAll();
         return $this -> view($data, Response::HTTP_OK) ;
     }
     public function getCommandeAction(Commande $commande)
     {
-        $data = $this ->contientRepository -> findBy(['commandeNumCommande' => $commande ]);
+        $data = $this ->commandeRepository -> findBy(['commandeNumCommande' => $commande ]);
         return $this -> view($data, Response::HTTP_OK) ;
     }
 
-    public function getClientCommandesAction(Client $clientCommander)
+    /**
+     * @RequestParam(name="date_commande")
+     * @RequestParam(name="num_client")
+     */
+    public function postCommandeAction(ParamFetcher $paramFetcher)
     {
-        $commandes = $this -> commandeRepository -> findBy(["clientNumClient" => $clientCommander]);
-        return $this -> view($commandes, Response::HTTP_OK);
-    }
-    public function getClientCommandeMeublesAction(Client $clientCommander,Commande $commande)
-    {   
-        if($clientCommander == $commande -> getClientNumClient()){
-            $meubles = $this -> contientRepository -> findBy(["commandeNumCommande" => $commande]);
-            return $this -> view($meubles, Response::HTTP_OK);
-        }
-        return $this -> view(['message' => 'Erreur'], Response::HTTP_NOT_FOUND);
-    }
-
-    public function postClientCommandeAction(Client $clientCommander)
-    {
-        $client = $clientCommander;
-        $etatcommande = $this -> getDoctrine() -> getRepository(EtatCommande::class) ->find("encours");
+        $client = $this -> getDoctrine() -> getRepository(Client::class) -> find($paramFetcher -> get('num_client'));
         $commande = new Commande();
-        $commande -> setEtatCommande($etatcommande)
-            -> setDateCommande(new DateTime())
+        $commande -> setDateCommande(new DateTime($paramFetcher -> get('date_commande')))
         ;
         $commande -> setClientNumClient($client);
         $this -> entityManager -> persist($commande);
@@ -68,110 +53,26 @@ class CommandeController extends AbstractFOSRestController
         return $this -> view($commande, Response::HTTP_CREATED) ;
     }
 
-    /**
-     * @RequestParam(name="etat_commande")
+        /**
+     * @RequestParam(name="date_commande")
+     * @RequestParam(name="num_client")
      */
-    public function patchClientCommandeEtatAction(Client $clientCommander, Commande $commande,ParamFetcher $paramFetcher)
+    public function putCommandeAction(Commande $commande,ParamFetcher $paramFetcher)
     {
-        if ($clientCommander == $commande -> getClientNumClient()) {
-            $etatcommande = $this -> getDoctrine() -> getRepository(EtatCommande::class) ->find($paramFetcher -> get("etat_commande"));
-            $commande -> setEtatCommande($etatcommande);
-                
-            $this -> entityManager -> flush();
-            return $this -> view($commande, Response::HTTP_OK) ;
-        }
-        return $this -> view($commande, Response::HTTP_NOT_MODIFIED) ;
+        $client = $this -> getDoctrine() -> getRepository(Client::class) -> find($paramFetcher -> get('num_client'));
+        $commande -> setDateCommande(new DateTime($paramFetcher -> get('date_commande')))
+        ;
+        $commande -> setClientNumClient($client);
+        $this -> entityManager -> persist($commande);
+        $this -> entityManager -> flush();
+        return $this -> view($commande, Response::HTTP_CREATED) ;
     }
 
-    /**
-     * @RequestParam(name="date_livraison")
-     */
-    public function patchClientCommandeDatelivraisonAction(Client $clientCommander, Commande $commande,ParamFetcher $paramFetcher)
+    public function deleteCommandeAction(Commande $commande)
     {
-        if ($clientCommander == $commande -> getClientNumClient()) {
-            $commande -> setDateLivraison(new Datetime($paramFetcher -> get("date_livraison")));
-            $this -> entityManager -> flush();
-            return $this -> view($commande, Response::HTTP_OK) ;
-        }
-        return $this -> view($commande, Response::HTTP_NOT_MODIFIED) ;
-    }
-    /**
-     * @RequestParam(name="date_paiement")
-     */
-    public function patchClientCommandeDatepaiementAction(Client $clientCommander, Commande $commande,ParamFetcher $paramFetcher)
-    {
-        if ($clientCommander == $commande -> getClientNumClient()) {
-            $commande -> setDatePaiement(new DateTime($paramFetcher -> get("date_paiement")));   
-            $this -> entityManager -> flush();
-            return $this -> view($commande, Response::HTTP_OK) ;
-        }
-        return $this -> view($commande, Response::HTTP_NOT_MODIFIED) ;
-    }
-
-    /**
-     * @RequestParam(name="meuble")
-     * @RequestParam(name="nombre_commande")
-     */
-    public function postClientCommandeMeublesAction(Client $clientCommander,Commande $commande, ParamFetcher $paramFetcher)
-    {
-        if($clientCommander == $commande -> getClientNumClient())
-        {
-            $nombrecommande = $paramFetcher -> get("nombre_commande");
-            $numserie = $paramFetcher -> get("meuble");
-            $meuble = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($numserie);
-            $contient = new Contient();
-            $contient -> setMeubleNumSerie($meuble)
-                -> setCommandeNumCommande($commande)
-                -> setNombreCommande($nombrecommande)
-            ;
-            $this -> entityManager -> persist($contient);
-            $this -> entityManager -> flush();
-            return $this -> view($commande, Response::HTTP_CREATED);
-        }else{
-            return $this -> view(['message' => 'Erreur'], Response::HTTP_NOT_ACCEPTABLE);
-        }
-        
-    }
-
-    /**
-     * @RequestParam(name="meuble")
-     * @RequestParam(name="nombre_commande")
-     */
-    public function putClientCommandeMeubleAction(Client $clientCommander,Commande $commande,Contient $contient, ParamFetcher $paramFetcher)
-    {
-        if($clientCommander == $commande -> getClientNumClient())
-        {
-            $nombrecommande = $paramFetcher -> get("nombre_commande");
-            $numserie = $paramFetcher -> get("meuble");
-            $meuble = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($numserie);
-            $contient -> setMeubleNumSerie($meuble)
-                -> setNombreCommande($nombrecommande)
-            ;
-            $this -> entityManager -> flush();
-            return $this -> view($commande, Response::HTTP_OK);
-        }
-        
-    }
-
-    
-    public function deleteClientCommandeMeublesAction(Client $clientCommander,Commande $commande, Contient $contient)
-    {   
-        if($clientCommander == $commande -> getClientNumClient()){
-            $this -> entityManager -> remove($contient);
-            $this -> entityManager -> flush();
-            return $this -> view($contient, Response::HTTP_OK);
-        }
-        return $this -> view(['message' => 'Erreur'], Response::HTTP_NOT_FOUND);
-    }
-
-    public function deleteClientCommandeAction(Client $clientCommander, Commande $commande)
-    {
-        if($clientCommander == $commande -> getClientNumClient()){
             $this -> entityManager -> remove($commande);
             $this -> entityManager -> flush();
             return $this -> view($commande, Response::HTTP_OK);
-        }
-        return $this -> view(['message' => 'Erreur'], Response::HTTP_NOT_FOUND);
     }
     // FIN CRUD Commandes
 }

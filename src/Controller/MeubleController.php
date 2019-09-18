@@ -87,10 +87,9 @@ class MeubleController extends AbstractFOSRestController
     }
     public function deleteMeublesAction(Meuble $meubleDelete)
     {
-        $meuble = $this -> meubleRepository -> find($meubleDelete);
-        $this -> entityManager -> remove($meuble);
+        $this -> entityManager -> remove($meubleDelete);
         $this -> entityManager -> flush();
-        return $this -> view($meuble, Response::HTTP_OK) ;
+        return $this -> view($meubleDelete, Response::HTTP_OK) ;
     }
 
     // FIN CRUD Meubles

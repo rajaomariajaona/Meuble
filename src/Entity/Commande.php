@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Commande
  *
- * @ORM\Table(name="commande", indexes={@ORM\Index(name="commande_ibfk_1", columns={"client_num_client"}), @ORM\Index(name="fk_commande_etat_comande1", columns={"etat_commande"})})
+ * @ORM\Table(name="commande", indexes={@ORM\Index(name="commande_ibfk_1", columns={"client_num_client"})})
  * @ORM\Entity(repositoryClass="App\Repository\CommandeRepository")
  */
 class Commande
@@ -22,25 +22,11 @@ class Commande
     private $numCommande;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
-     * @ORM\Column(name="date_commande", type="date", nullable=false)
+     * @ORM\Column(name="date_commande", type="date", nullable=true, options={"default"="NULL"})
      */
-    private $dateCommande;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date_livraison", type="date", nullable=false)
-     */
-    private $dateLivraison;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date_paiement", type="date", nullable=false)
-     */
-    private $datePaiement;
+    private $dateCommande = 'NULL';
 
     /**
      * @var \Client
@@ -52,16 +38,6 @@ class Commande
      */
     private $clientNumClient;
 
-    /**
-     * @var \EtatCommande
-     *
-     * @ORM\ManyToOne(targetEntity="EtatCommande")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="etat_commande", referencedColumnName="etat_commande")
-     * })
-     */
-    private $etatCommande;
-
     public function getNumCommande(): ?int
     {
         return $this->numCommande;
@@ -72,33 +48,9 @@ class Commande
         return $this->dateCommande;
     }
 
-    public function setDateCommande(\DateTimeInterface $dateCommande): self
+    public function setDateCommande(?\DateTimeInterface $dateCommande): self
     {
         $this->dateCommande = $dateCommande;
-
-        return $this;
-    }
-
-    public function getDateLivraison(): ?\DateTimeInterface
-    {
-        return $this->dateLivraison;
-    }
-
-    public function setDateLivraison(\DateTimeInterface $dateLivraison): self
-    {
-        $this->dateLivraison = $dateLivraison;
-
-        return $this;
-    }
-
-    public function getDatePaiement(): ?\DateTimeInterface
-    {
-        return $this->datePaiement;
-    }
-
-    public function setDatePaiement(\DateTimeInterface $datePaiement): self
-    {
-        $this->datePaiement = $datePaiement;
 
         return $this;
     }
@@ -115,22 +67,5 @@ class Commande
         return $this;
     }
 
-    public function getEtatCommande(): ?EtatCommande
-    {
-        return $this->etatCommande;
-    }
 
-    public function setEtatCommande(?EtatCommande $etatCommande): self
-    {
-        $this->etatCommande = $etatCommande;
-
-        return $this;
-    }
-
-    public function setNumCommande(int $numCommande): self
-    {
-        $this->numCommande = $numCommande;
-
-        return $this;
-    }
 }

@@ -45,7 +45,7 @@ class CategorieController extends AbstractFOSRestController
         $categorie ->setCategorie($nom);
         $this -> entityManager -> persist($categorie);
         $this -> entityManager -> flush();
-        return $this -> view($categorie, Response::HTTP_OK);
+        return $this -> view($categorie, Response::HTTP_CREATED);
     }
 
     public function deleteCategorieAction(Categorie $categorieDelete)
