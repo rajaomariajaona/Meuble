@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Meuble
  *
  * @ORM\Table(name="meuble", indexes={@ORM\Index(name="fk_meuble_categorie1", columns={"categorie"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\MeubleRepository")
  */
 class Meuble
 {
@@ -36,18 +36,11 @@ class Meuble
     private $prix;
 
     /**
-     * @var int|null
+     * @var int
      *
-     * @ORM\Column(name="quantite_stock", type="integer", nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="quantite_stock", type="integer", nullable=false)
      */
-    private $quantiteStock = 'NULL';
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="quantite_commande", type="integer", nullable=true, options={"default"="NULL"})
-     */
-    private $quantiteCommande = 'NULL';
+    private $quantiteStock;
 
     /**
      * @var \Categorie
@@ -58,8 +51,6 @@ class Meuble
      * })
      */
     private $categorie;
-
-
 
     public function setNumSerie(int $numSerie):self
     {
@@ -108,18 +99,6 @@ class Meuble
         
         return $this;
     }
-    
-    public function getQuantiteCommande(): ?int
-    {
-        return $this->quantiteCommande;
-    }
-    
-    public function setQuantiteCommande(?int $quantiteCommande): self
-    {
-        $this->quantiteCommande = $quantiteCommande;
-        
-        return $this;
-    }
 
     public function getCategorie(): ?Categorie
     {
@@ -131,5 +110,6 @@ class Meuble
         $this->categorie = $categorie;
         
         return $this;
-    }   
+    }  
+
 }

@@ -33,8 +33,7 @@ class CommandeController extends AbstractFOSRestController
     }
     public function getCommandeAction(Commande $commande)
     {
-        $data = $this ->commandeRepository -> findBy(['commandeNumCommande' => $commande ]);
-        return $this -> view($data, Response::HTTP_OK) ;
+        return $this -> view($commande, Response::HTTP_OK) ;
     }
 
     /**
@@ -65,7 +64,7 @@ class CommandeController extends AbstractFOSRestController
         $commande -> setClientNumClient($client);
         $this -> entityManager -> persist($commande);
         $this -> entityManager -> flush();
-        return $this -> view($commande, Response::HTTP_CREATED) ;
+        return $this -> view($commande, Response::HTTP_OK) ;
     }
 
     public function deleteCommandeAction(Commande $commande)

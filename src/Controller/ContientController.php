@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
+use App\Entity\Commande;
 use App\Entity\Contient;
 use App\Entity\Meuble;
 use App\Repository\ContientRepository;
@@ -23,27 +25,27 @@ class ContientController extends AbstractFOSRestController
 
     // CRUD Contient
 
-    public function getContientsAction()
+    public function getCommandeContientsAction(Commande $commande)
     {
-        $data = $this -> contientRepository -> findAll();
+        $data = $this -> contientRepository -> findBy(['commandeNumCommande' => $commande]);
         return $this -> view($data, Response::HTTP_OK) ;
     }
-    public function getContientAction(Contient $contient)
+
+    public function getCommandeContientAction(Commande $commande, Meuble $meuble)
     {
+        $contient = $this -> contientRepository -> findOneBy(['commandeNumCommande' => $commande, 'meubleNumSerie' => $meuble]);
         return $this -> view($contient, Response::HTTP_OK) ;
     }
 
 
     /**
      * @RequestParam(name="numserie")
-     * @RequestParam(name="numcommande")
      * @RequestParam(name="nombrecommande")
      */
-    public function postContientAction(ParamFetcher $paramFetcher)
+    public function postCommandeContientAction(Commande $commande, ParamFetcher $paramFetcher)
     {
         $contient = new Contient();
         $meuble = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($paramFetcher -> get("numserie"));
-        $commande = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($paramFetcher -> get("numcommande"));
         $contient -> setMeubleNumSerie($meuble) 
              -> setCommandeNumCommande($commande)
              -> setNombreCommande($paramFetcher -> get("nombrecommande"))
@@ -55,16 +57,15 @@ class ContientController extends AbstractFOSRestController
 
     /**
      * @RequestParam(name="numserie")
-     * @RequestParam(name="numcommande")
      * @RequestParam(name="nombrecommande")
      */
-    public function putContientAction(Contient $contient, ParamFetcher $paramFetcher)
+    public function putCommandeContientAction(Commande $commandeA, Meuble $meubleA, ParamFetcher $paramFetcher)
     {
+        $contient = $this -> contientRepository -> findOneBy(['commandeNumCommande' => $commandeA, 'meubleNumSerie' => $meubleA]);
+
         $meuble = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($paramFetcher -> get("numserie"));
-        $commande = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($paramFetcher -> get("numcommande"));
 
             $contient -> setMeubleNumSerie($meuble)
-                -> setCommandeNumCommande($commande)
                 -> setNombreCommande($paramFetcher -> get("nombrecommande"))
             ;
             $this -> entityManager -> flush();
@@ -73,8 +74,9 @@ class ContientController extends AbstractFOSRestController
 
     
 
-    public function deleteContientsAction(Contient $contient)
+    public function deleteCommandeContientsAction(Commande $commandeA, Meuble $meubleA)
     {   
+        $contient = $this -> contientRepository -> findOneBy(['commandeNumCommande' => $commandeA, 'meubleNumSerie' => $meubleA]);
             $this -> entityManager -> remove($contient);
             $this -> entityManager -> flush();
             return $this -> view($contient, Response::HTTP_OK);
