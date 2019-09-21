@@ -36,15 +36,16 @@ class MeubleRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Meuble
+     /**
+     * @return Meuble[] Returns an array of Meuble objects
+     */
+
+    public function findDispo()
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('m.quantiteStock != 0')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
-    */
 }
