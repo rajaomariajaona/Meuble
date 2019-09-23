@@ -22,11 +22,18 @@ class Commande
     private $numCommande;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTime
      *
-     * @ORM\Column(name="date_commande", type="date", nullable=true, options={"default"="NULL"})
+     * @ORM\Column(name="date_commande", type="date", nullable=false)
      */
-    private $dateCommande = 'NULL';
+    private $dateCommande;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="livree", type="boolean", nullable=false)
+     */
+    private $livree;
 
     /**
      * @var \Client
@@ -68,4 +75,28 @@ class Commande
     }
 
 
+
+    /**
+     * Get the value of livree
+     *
+     * @return  bool
+     */ 
+    public function getLivree()
+    {
+        return $this->livree;
+    }
+
+    /**
+     * Set the value of livree
+     *
+     * @param  bool  $livree
+     *
+     * @return  self
+     */ 
+    public function setLivree(bool $livree)
+    {
+        $this->livree = $livree;
+
+        return $this;
+    }
 }
