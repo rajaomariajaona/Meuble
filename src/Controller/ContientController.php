@@ -46,13 +46,27 @@ class ContientController extends AbstractFOSRestController
     {
         $contient = new Contient();
         $meuble = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($paramFetcher -> get("numserie"));
-        $contient -> setMeubleNumSerie($meuble) 
-             -> setCommandeNumCommande($commande)
-             -> setNombreCommande($paramFetcher -> get("nombrecommande"))
-        ;
-        $this -> entityManager -> persist($contient);
-        $this -> entityManager -> flush();
-        return $this -> view($contient, Response::HTTP_CREATED) ;
+
+        $nombreCommandee = $paramFetcher -> get("nombrecommande");
+        $nombreStock = $meuble -> getQuantiteStock();
+
+        if($nombreStock >= $nombreCommandee){
+            $nombreStock = $meuble -> getQuantiteStock();
+        
+            $contient -> setMeubleNumSerie($meuble) 
+                 -> setCommandeNumCommande($commande)
+                 -> setNombreCommande($paramFetcher -> get("nombrecommande"))
+            ;
+            $newStock = $nombreStock - $nombreCommandee;
+            $meuble -> setQuantiteStock($newStock);
+            
+            $this -> entityManager -> persist($contient);
+            $this -> entityManager -> persist($meuble);
+            $this -> entityManager -> flush();
+            return $this -> view($contient, Response::HTTP_CREATED) ;
+        }else{
+            return $this -> view(['messages' => 'Erreur de commande'], Response::HTTP_NOT_ACCEPTABLE) ;
+        }
     }
 
     /**
@@ -65,11 +79,21 @@ class ContientController extends AbstractFOSRestController
 
         $meuble = $this -> getDoctrine() -> getRepository(Meuble::class) -> find($paramFetcher -> get("numserie"));
 
+        $nombreStock = $meuble -> getQuantiteStock();
+        $nombreCommandee = $paramFetcher -> get("nombrecommande");
+
+        if($nombreCommandee >= $nombreStock){
+            $newStock = $nombreStock - $nombreCommandee;
             $contient -> setMeubleNumSerie($meuble)
-                -> setNombreCommande($paramFetcher -> get("nombrecommande"))
+            -> setNombreCommande()
             ;
+            $meuble -> setQuantiteStock($newStock);
+
+            $this -> entityManager -> persist($contient);
+            $this -> entityManager -> persist($meuble);
             $this -> entityManager -> flush();
             return $this -> view($contient, Response::HTTP_OK);
+        }
     }
 
     
@@ -81,5 +105,19 @@ class ContientController extends AbstractFOSRestController
             $this -> entityManager -> flush();
             return $this -> view($contient, Response::HTTP_OK);
     }
+
+    public function deleteCommandeContientsCancelAction(Commande $commande, Meuble $meuble)
+    {   
+        $contient = $this -> contientRepository -> findOneBy(['commandeNumCommande' => $commande, 'meubleNumSerie' => $meuble]);
+
+        $nombreCommandee = $contient -> getNombreCommande();
+        $nombreStock = $meuble -> getQuantiteStock();
+        $oldCommande = $nombreCommandee + $nombreStock;
+        $meuble -> setQuantiteStock($oldCommande);
+        $this -> entityManager -> remove($contient);
+        $this -> entityManager -> flush();
+        return $this -> view($contient, Response::HTTP_OK);
+    }
+
     // FIN CRUD Contients
 }

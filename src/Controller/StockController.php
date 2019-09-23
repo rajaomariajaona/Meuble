@@ -34,13 +34,6 @@ class StockController extends AbstractFOSRestController
         return $this -> view(["quantiteStock" => $meuble -> getQuantiteStock()], Response::HTTP_OK) ;
     }
 
-    public function getMeublesCommandeAction(Meuble $meubleCommande)
-    {
-        $meuble = $this -> meubleRepository -> find($meubleCommande);
-
-        return $this -> view(["quantiteCommande" => $meuble -> getQuantiteCommande()], Response::HTTP_OK) ;
-    }
-
     /**
      * @RequestParam(name="quantitestock")
      * 
@@ -51,18 +44,6 @@ class StockController extends AbstractFOSRestController
         $meuble = $this -> meubleRepository -> find($meubleStock);
 
         $meuble -> setQuantiteStock($quantitestock);
-        $this -> entityManager -> flush();
-        return $this -> view($meuble, Response::HTTP_OK) ;
-    }
-    /**
-     * @RequestParam(name="quantitecommande")
-     */
-    public function patchMeublesCommandeAction(ParamFetcher $paramFetcher, Meuble $meubleCommande)
-    {
-        $quantitecommande = $paramFetcher -> get("quantitecommande");
-        $meuble = $this -> meubleRepository -> find($meubleCommande);
-
-        $meuble -> setQuantiteCommande($quantitecommande);
         $this -> entityManager -> flush();
         return $this -> view($meuble, Response::HTTP_OK) ;
     }
