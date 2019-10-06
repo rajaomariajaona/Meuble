@@ -29,3 +29,7 @@ contient:
     type: rest
     resource: App\Controller\ContientController
     prefix: api
+statistique:
+    type: rest
+    resource: App\Controller\StatistiqueController
+    prefix: api

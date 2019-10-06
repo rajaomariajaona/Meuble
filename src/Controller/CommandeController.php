@@ -28,7 +28,7 @@ class CommandeController extends AbstractFOSRestController
 
     public function getCommandesAction()
     {
-        $data = $this -> commandeRepository -> findAll();
+        $data = $this -> commandeRepository -> findBy(array(), array('dateCommande' => 'ASC'));
         return $this -> view($data, Response::HTTP_OK) ;
     }
     public function getCommandeAction(Commande $commande)
@@ -44,15 +44,17 @@ class CommandeController extends AbstractFOSRestController
     {
         $client = $this -> getDoctrine() -> getRepository(Client::class) -> find($paramFetcher -> get('num_client'));
         $commande = new Commande();
-        $commande -> setDateCommande(new DateTime($paramFetcher -> get('date_commande')))
+        $commande 
+            -> setDateCommande(new DateTime($paramFetcher -> get('date_commande')))
+            -> setClientNumClient($client)
+            -> setLivree(false)
         ;
-        $commande -> setClientNumClient($client);
         $this -> entityManager -> persist($commande);
         $this -> entityManager -> flush();
         return $this -> view($commande, Response::HTTP_CREATED) ;
     }
 
-        /**
+    /**
      * @RequestParam(name="date_commande")
      * @RequestParam(name="num_client")
      */
@@ -67,11 +69,35 @@ class CommandeController extends AbstractFOSRestController
         return $this -> view($commande, Response::HTTP_OK) ;
     }
 
+    /**
+     * @RequestParam(name="livree")
+     */
+     public function patchCommandeLivreeAction(Commande $commande, ParamFetcher $paramFetcher)
+    {
+        $commande -> setLivree($paramFetcher -> get("livree"));
+        $this -> entityManager -> flush();
+    }
+
     public function deleteCommandeAction(Commande $commande)
     {
+        if($commande -> getLivree()){
             $this -> entityManager -> remove($commande);
             $this -> entityManager -> flush();
             return $this -> view($commande, Response::HTTP_OK);
+        }else{
+            
+            $contients = $this -> getDoctrine()->getRepository(Contient::class) -> findBy(['commandeNumCommande' => $commande]);
+            foreach ($contients as $key => $contient) {
+                $meuble = $contient -> getMeubleNumSerie();
+                $nombreCommandee = $contient -> getNombreCommande();
+                $nombreStock = $meuble -> getQuantiteStock();
+                $oldCommande = $nombreCommandee + $nombreStock;
+                $meuble -> setQuantiteStock($oldCommande);
+            }
+            $this -> entityManager -> remove($commande);
+            $this -> entityManager -> flush();
+            return $this -> view($commande, Response::HTTP_OK);
+        }
     }
     // FIN CRUD Commandes
 }

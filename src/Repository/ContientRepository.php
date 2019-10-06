@@ -36,6 +36,19 @@ class ContientRepository extends ServiceEntityRepository
     }
     */
 
+    // public function findMeubleleplusachete()
+    // {
+    //     return $this->createQueryBuilder('c')
+    //         ->select("sum(c.nombreCommande)")
+    //         ->addSelect("c.meubleNumSerie")
+    //         ->innerJoin("c.meubleNumSerie", "m", "with", "c.meubleNumSerie = ?1", "m.numSerie")
+    //         ->groupBy("c.meubleNumSerie")
+    //         ->orderBy("c.meubleNumSerie", "DESC")
+    //         ->getQuery()
+    //         ->getResult()
+    //     ;
+    // }
+
     /*
     public function findOneBySomeField($value): ?Contient
     {

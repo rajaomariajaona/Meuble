@@ -38,8 +38,7 @@ class MeubleController extends AbstractFOSRestController
      * @RequestParam(name="nom")
      * @RequestParam(name="prix")
      * @RequestParam(name="categorie")
-     * @RequestParam(name="quantitestock",default=null,nullable=true)
-     * @RequestParam(name="quantitecommande",default=null,nullable=true)
+     * @RequestParam(name="quantitestock",default=0)
      */
     public function postMeublesAction(ParamFetcher $paramFetcher)
     {
@@ -47,7 +46,6 @@ class MeubleController extends AbstractFOSRestController
         $nom = $paramFetcher -> get("nom");
         $prix = $paramFetcher -> get("prix");
         $quantitestock = $paramFetcher -> get("quantitestock");
-        $quantitecommande = $paramFetcher -> get("quantitecommande");
         $categorie = $this->getDoctrine()->getRepository(Categorie::class) ->find($paramFetcher -> get("categorie"));
 
         $meuble = new Meuble();
@@ -55,8 +53,7 @@ class MeubleController extends AbstractFOSRestController
         -> setNomMeuble($nom)
         ->setPrix($prix)
         ->setCategorie($categorie)
-        ->setQuantiteStock($quantitestock)
-        ->setQuantiteCommande($quantitecommande);
+        ->setQuantiteStock($quantitestock);
 
         $this -> entityManager -> persist($meuble);
         $this -> entityManager -> flush();
